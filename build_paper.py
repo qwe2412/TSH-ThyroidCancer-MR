@@ -471,9 +471,9 @@ para("数据可用性声明：暴露 GWAS（Zhou 等，2020）与结局 GWAS（e
      "（https://gwas.mrcieu.ac.uk/）；TCGA-THY 表达与临床数据来自 TCGA/GDC 公共数据库；"
      "外部验证表达数据来自 NCBI GEO（GSE33630）；药物敏感性训练数据使用 GDSC2"
      "（805 细胞系 × 198 药物）。全部 11 个分析脚本（脚本 A–K，含 MR 敏感性、MVMR "
-     "条件检验与 Lasso/弹性网重跑）已整理为可复现脚本包并在本地 Git 仓库版本控制"
-     "（2 次提交）；完整代码将于论文接受后公开于 GitHub/Zenodo，仓库链接与 DOI "
-     "将在定稿时补充。", first_indent=22)
+     "条件检验与 Lasso/弹性网重跑）已整理为可复现脚本包，完整代码公开于 GitHub "
+     "（https://github.com/qwe2412/TSH-ThyroidCancer-MR，共 5 次提交，含脚本、运行说明、"
+     "论文构建与发布脚本）；Zenodo 版本 DOI 将于论文接收后经归档补充。", first_indent=22)
 para("资金来源：本研究未接受任何外部资金资助（TRIPOD+AI 条目 13）。", first_indent=22)
 para("利益冲突：作者声明无利益冲突。", first_indent=22)
 para("软件与版本：统计分析全部基于 R 4.6.1 完成，关键包版本包括 TwoSampleMR 0.7.9、"
