@@ -10,6 +10,10 @@
 
 ---
 
+## 代码公开仓库
+
+完整代码已公开：https://github.com/qwe2412/TSH-ThyroidCancer-MR（Public，main 分支，6 次提交，含脚本、README、论文构建与发布脚本）。Zenodo 版本 DOI 将于论文接收后归档补充。
+
 ## 运行顺序与依赖
 
 | 顺序 | 脚本 | 用途 | 关键依赖 |
@@ -133,3 +137,36 @@ oncoPredict 1.3.1、GSVA 2.6.6、MRPRESSO、sva 3.60.0、glmnet、**MVMR 0.4.8**
   Q = 244.76、df = 50（54 SNP），并补条件 F 与 Q 最小化稳健估计。
 - MR 主分析：旧稿"剔除 4 SNP 后 65 SNP IVW b = −0.547"为手动操作 → 2026-09-13 按
   MR-PRESSO 失真检验（P = 0.124）保留 69 SNP，IVW b = −0.719（P = 1.73×10⁻⁴）。
+
+
+---
+
+## 2026-09-14 二轮严格审查补跑（脚本 12 / 13 / 14，回应第二轮 DeepSeek 审稿）
+
+### 12_脚本J_Lasso稳定性重跑.R（变量选择稳定性）
+- Bootstrap 200 次（每次从 409 例有放回抽样，按双基因 Cox 结构拟合）记录 GNG7/NFIA 保留频率与系数方向；
+- 5x10 折重复交叉验证评估评分 C-index 分布（均值与范围）；
+- 产物：D:\gwas\lasso_boot_20260914.RData（boot_freq / boot_coef / cv_cindex / 汇总）。
+
+### 13_脚本K_药敏CV与置换检验.R（药敏可靠性评估）
+- 12 个代表药物 5 折交叉验证（ridge，log IC50 尺度）：R2 中位 0.350（0.080-0.430）、
+  Pearson 中位 0.611、RMSE 中位 1.478（详见 D:\gwas\drug_cv_20260914.csv）；
+- 组标签置换检验（B = 500 次）：FDR<0.05 显著药物数零分布均值 0.62、95% 分位 0、最大值 82；
+  实际 176 远超随机（P < 0.002）→ 组间差异并非单纯由药物间相关性所致；
+- 产物：D:\gwas\drug_cv_perm_20260914.RData。
+
+### 14_脚本L_MR二轮补跑.R（MR 敏感性二轮补跑，需 OpenGWAS Token）
+- 按 MR-PRESSO Distortion Outliers Indices 剔除后重估随机/固定效应 IVW（outlier-corrected 主/并列分析）；
+- 打印离群 SNP rsID 列表；I2（IVW 75.7%、Egger 76.0%）与 DerSimonian-Laird tau2；
+- MR-RAPS（mr.raps 0.4.3，GitHub qingyuanzhao/mr.raps，经代理安装）；
+- Steiger 方向性检验（r 用 get_r_from_pn，outcome n = 491974）；
+- 反向 MR 尝试（结局 GWAS 是否有 P<5e-8 显著位点，无则如实报告）；
+- 复制结局1/2完整敏感性（五法 MR + Q + I2 + Egger 截距 + PRESSO 2000 次）；
+- MVMR 重建 F.data + qhet_mvmr(1000 次) 并 str() 探查输出结构提取全暴露估计。
+
+### 2026-09-14 新增封存值（脚本 K 实测）
+- 药敏 CV：R2 中位 0.3501（0.0803-0.4303）；Pearson 中位 0.6108；RMSE 中位 1.4782
+- 置换检验：零分布均值 0.62；95% 分位 0；最大值 82；实际 176 → P < 0.002
+- 论文 2026-09-14 版：D:\gwas\副课题1论文_完整版_20260914.docx（含二轮修订）
+- 补充材料：D:\gwas\补充材料1_STROBE-MR检查表_20260914.docx、
+  D:\gwas\补充材料2_TRIPODAI检查表_20260914.docx
