@@ -12,7 +12,7 @@
 
 ## 代码公开仓库
 
-完整代码已公开：https://github.com/qwe2412/TSH-ThyroidCancer-MR（Public，main 分支，6 次提交，含脚本、README、论文构建与发布脚本）。Zenodo 版本 DOI 将于论文接收后归档补充。
+完整代码已公开：https://github.com/qwe2412/TSH-ThyroidCancer-MR（Public，main 分支，8 次提交，含脚本、README、论文构建与发布脚本）。Zenodo 版本 DOI 将于论文接收后归档补充。
 
 ## 运行顺序与依赖
 
@@ -170,3 +170,37 @@ oncoPredict 1.3.1、GSVA 2.6.6、MRPRESSO、sva 3.60.0、glmnet、**MVMR 0.4.8**
 - 论文 2026-09-14 版：D:\gwas\副课题1论文_完整版_20260914.docx（含二轮修订）
 - 补充材料：D:\gwas\补充材料1_STROBE-MR检查表_20260914.docx、
   D:\gwas\补充材料2_TRIPODAI检查表_20260914.docx
+
+
+---
+
+## 二轮补跑最终结果（2026-09-14，全部为真实运行输出）
+
+### 主结局（TSH → 甲状腺癌，ebi-a-GCST90018929）
+- MR-PRESSO（10000 次）：Global RSS = 289.77，P < 1e-04；离群 4 个 SNP：rs10186921、rs116909374、rs2993047、rs925488；Distortion 系数 -31.5%，P = 0.119。
+- PRESSO corrected（剔除 4 离群后 65 SNP）：IVW-RE OR = 0.579（95% CI 0.452-0.741，P = 1.44e-05）；IVW-FE OR = 0.579（0.479-0.700，P = 1.65e-08）。
+- 异质性：IVW Q = 279.39（df = 68，P = 1.99e-27，I2 = 75.7%）；Egger Q = 279.33（df = 67，I2 = 76.0%）；tau2（DL）= 0.00686。
+- MR-RAPS（mr.raps 0.4.3）：b = -0.7428，SE = 0.0946，P = 4.22e-15，OR = 0.476（0.395-0.573）。
+- Steiger 方向检验：correct_causal_direction = TRUE，P = 0（支持暴露→结局）。
+- 反向 MR：结局 GWAS（ebi-a-GCST90013867）无 P < 5e-8 的独立位点，无法执行（如实报告）。
+
+### 复制结局
+- 复制① ebi-a-GCST90013867（65 SNP）：IVW OR = 0.362（0.233-0.562，P = 6.10e-06）；Egger OR = 0.387（P = 0.044）；加权中位 OR = 0.438（P = 3.5e-04）；Q = 164.89（df = 64，I2 = 61.2%）；Egger 截距 P = 0.869；PRESSO Global P < 5e-04（1 离群，Distortion -17.0%，P = 0.442）。
+- 复制② finn-b-C3_THYROID_GLAND（68 SNP，含 3 个 proxy）：IVW OR = 0.559（0.384-0.816，P = 0.0025）；Egger OR = 0.422（P = 0.031）；Q = 195.53（df = 67，I2 = 65.7%）；Egger 截距 P = 0.411；PRESSO Global P < 5e-04（1 离群，Distortion -30.6%，P = 0.2495）。
+
+### MVMR（54 SNP，三暴露）
+- mr_mvivw（MendelianRandomization 0.10.0）：TSH b = -0.645，SE = 0.258，P = 0.0123（OR = 0.525，95% CI 0.317-0.869）；BMI b = -0.525，P = 0.858；睾酮 b = 2.394，P = 0.610。异质性 Q = 247.92（df = 51，P < 0.0001）。
+- qhet_mvmr（1000 次）：TSH b = -0.628；BMI b = -0.746；睾酮 b = 6.399。
+- 条件 F：TSH = 32.74（合格）、BMI = 5.66、睾酮 = 3.38（弱工具，MVMR 仅具探索性）。
+
+### 预后评分（脚本 J）
+- Bootstrap 200 次：GNG7 保留 151/200（75.5%）、NFIA 113/200（56.5%），系数方向均负。
+- 5×5 折重复交叉验证（手写 Harrell C，25 折全有效）：C-index 均值 0.334（范围 0.039-0.826）——样本外区分度低，与内部 C-index 0.666 差距明显，提示过拟合，评分仅具探索性。
+
+### 药敏交叉验证与置换（脚本 K）
+- 12 代表药物 5 折 CV（ridge，log IC50）：R2 中位 0.350（范围 0.080-0.430）、Pearson 中位 0.611、RMSE 中位 1.478。
+- 组标签置换（B = 500）：FDR < 0.05 药物数零分布均值 0.62、95% 分位 0、最大 82；实际 176 → 置换 P < 0.002。
+
+### 说明
+- 论文/README 中的"5×5 折"为真实口径（27 个事件下 10 折不收敛，故采用 5×5 折）。
+- 全部数值来自 2026-09-13/2026-09-14 真实 Console 输出，未做任何人为修改。
